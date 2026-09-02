@@ -1,6 +1,6 @@
 # BLACKGLASS // HYDRA — game harness
 
-A satirical dual-perspective information-war strategy game.
+OSINT Dual-perspective information-war strategy game.
 **BLACKGLASS // CONTAINMENT** (the fictional intelligence platform trying
 to suppress a leak) vs **HYDRA // DISCLOSURE** (the disclosure network
 trying to make credible information impossible to contain). Both play the
