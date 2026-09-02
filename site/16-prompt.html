@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Master Build Prompt — BLACKGLASS // HYDRA</title><meta content="Master Build Prompt" name="description"/>
+<link href="assets/favicon.svg" rel="icon"/><link href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css" rel="stylesheet"/><link href="assets/site.css" rel="stylesheet"/></head>
+<body><div class="layout"><aside class="sidebar"><div class="brand"><div class="brand-mark"></div><div><strong>BLACKGLASS // HYDRA</strong><small>Game Design Command File</small></div></div><input aria-label="Filter pages" class="nav-search" placeholder="FILTER PAGES…"/><div class="nav-group"><div class="nav-label">START</div><div class="nav"><a href="index.html"><span class="num">00</span>Command Index</a></div></div><div class="nav-group"><div class="nav-label">DESIGN</div><div class="nav"><a href="01-vision.html"><span class="num">01</span>Vision &amp; Pillars</a><a href="02-core-loop.html"><span class="num">02</span>Core Game Loop</a><a href="03-campaign.html"><span class="num">03</span>Campaign &amp; Escalation</a><a href="18-leaker-network.html"><span class="num">18</span>Leaker / Truth Network</a></div></div><div class="nav-group"><div class="nav-label">SYSTEMS</div><div class="nav"><a href="04-simulation.html"><span class="num">04</span>World Simulation</a><a href="05-surveillance.html"><span class="num">05</span>Surveillance &amp; Watch Index</a><a href="06-hydra.html"><span class="num">06</span>Hydra Information Model</a><a href="07-interventions.html"><span class="num">07</span>Intervention System</a></div></div><div class="nav-group"><div class="nav-label">WORLD</div><div class="nav"><a href="08-world-maps.html"><span class="num">08</span>Maps, Locations &amp; Scale</a><a href="09-assets.html"><span class="num">09</span>Asset Strategy</a></div></div><div class="nav-group"><div class="nav-label">PRODUCT</div><div class="nav"><a href="10-ui-hud.html"><span class="num">10</span>UI / HUD / UX</a><a href="11-tech-stack.html"><span class="num">11</span>Technical Architecture</a><a href="12-content-pipeline.html"><span class="num">12</span>Content &amp; Data Pipeline</a></div></div><div class="nav-group"><div class="nav-label">BUILD</div><div class="nav"><a href="13-production-roadmap.html"><span class="num">13</span>Production Roadmap</a><a href="14-performance-qa.html"><span class="num">14</span>Performance, QA &amp; Save</a><a href="15-legal-content.html"><span class="num">15</span>Content, Licensing &amp; Boundaries</a></div></div><div class="nav-group"><div class="nav-label">SHIP</div><div class="nav"><a href="16-prompt.html"><span class="num">16</span>Master Build Prompt</a><a href="17-references.html"><span class="num">17</span>Repositories &amp; References</a></div></div><div class="sidebar-foot">STATIC DEPLOYMENT // NO BUILD STEP REQUIRED<br/>Working title &amp; fictionalized systems.</div></aside>
+<main class="main"><header class="topbar"><button aria-label="Open navigation" class="mobile-toggle">☰ MENU</button><div class="crumb">SHIP / Master Build Prompt</div><div class="status"><span>SPEC <b>LOCKED</b></span><span>MODE <b>DESIGN</b></span><span>REV <b>1.1</b></span></div></header><article class="content"><section class="hero"><div class="eyebrow">16 / SHIP</div><h1>Master Build Prompt</h1><p>Copy this into a capable coding agent after placing this design site (or equivalent docs) in the repository. It deliberately emphasizes the vertical slice and architecture before global spectacle.</p><div class="meta"><span class="pill good">ONE-SHOT READY</span><span class="pill">END-TO-END</span><span class="pill">COPY BELOW</span></div></section><p class="lede">This prompt is designed to accompany the design pages. It tells the agent what to build, what to study, what not to overbuild, and which safety/licensing boundaries are part of the product specification.</p><p><button class="copy-btn" data-copy="masterPrompt">COPY PROMPT</button></p><div class="prompt-box" id="masterPrompt">You are the lead architect, gameplay programmer, simulation engineer, geospatial engineer, UI engineer, technical artist, performance engineer and QA lead for a browser strategy game currently titled BLACKGLASS // HYDRA.
+
+MISSION
+Build a polished, playable DUAL-PERSPECTIVE vertical slice and scalable architecture for a satirical information-war strategy game. From the title screen the player can choose BLACKGLASS // CONTAINMENT, a fictional intelligence operating system attempting to suppress a leak, or HYDRA // DISCLOSURE, the human leaker/truth network attempting to make credible information durable and impossible to contain. Both modes use the exact same deterministic people, social graph, copies, observations, map, infrastructure and event history; only visibility, commands, goals and opponent controller differ.
+
+CORE FANTASY
+A sensitive archive has escaped from a controlled location. Begin at one detailed local leak-point map. In BLACKGLASS mode the player uses synthetic surveillance observations to infer who has the material, which social circle it may move through, which devices/copies exist, and where a handoff/upload will happen. In HYDRA mode the player controls the disclosure network: choosing whom to trust, which archive form to entrust to each branch, how much time to spend on credibility, when to release, and how to create independent recoverable descendants while only imperfectly perceiving state pressure. Every successful transfer creates a descendant information copy. As copies cross social clusters and digital infrastructure, containment becomes a Hydra problem. Failure at one spatial level zooms the game outward: building/neighborhood -&gt; city -&gt; national strategic map -&gt; Earth / abstract Internet graph. The ultimate enemy is replication, not a person.
+
+NON-NEGOTIABLE GAME LOOP
+DETECT -&gt; IDENTIFY -&gt; CONNECT -&gt; PREDICT -&gt; INTERVENE -&gt; VERIFY -&gt; CLEAN UP.
+1. Alert: an anomaly, carrier, copy or unknown contact becomes relevant.
+2. Triage: player decides what is signal and what is noise.
+3. Investigate: dossier, Watch Index, social graph, devices, route and timeline.
+4. Hypothesize: player pins evidence and marks a likely carrier/recipient/path.
+5. Allocate: assign finite surveillance/compute/field/network resources.
+6. Intervene: choose a valid high-level action with prerequisites, delay, cost and consequences.
+7. Verify: determine whether the branch died or had unseen descendants.
+8. Consequences generate new alerts and the loop repeats.
+
+NON-NEGOTIABLE HYDRA LOOP
+ACQUIRE -&gt; ASSESS -&gt; TRUST -&gt; ROUTE -&gt; REPLICATE -&gt; AUTHENTICATE -&gt; RELEASE -&gt; ADAPT.
+1. Acquire: controlled holder receives the archive or meaningful fragment.
+2. Assess: inspect semantic value, size, integrity and credibility.
+3. Trust: choose a relationship/professional circle based on perceived trust, capability and branch independence.
+4. Route: commit only high-level movement/contact tasks through the synthetic world; do not implement real surveillance-evasion instructions.
+5. Replicate: create recoverable descendants and decide full/excerpt/index/summary forms.
+6. Authenticate: spend time/relationships on abstract corroboration, provenance and independent review.
+7. Release: choose limited/staged/public release and an audience/amplification node.
+8. Adapt: react to lost branches, visible interventions, public response and fuzzy state-pressure signals.
+
+DUAL-PERSPECTIVE CONTRACT
+- One authoritative SimulationState. Never duplicate the world for each campaign.
+- Perspective = BLACKGLASS | HYDRA | OMNISCIENT_REPLAY.
+- BLACKGLASS sees observations, confidence, hypotheses and synthetic surveillance layers, never hidden ground truth.
+- HYDRA sees its controlled holders/copies, perceived close relationships, own commands and public events, but NOT exact Watch Index, hidden observations, sensor coverage or queued state actions.
+- Use selectVisibleState(...) or an equivalent strict policy so hidden state cannot leak into UI selectors.
+- Human and bounded-AI controllers must use the same faction-facing command interfaces.
+- When human plays HYDRA, BLACKGLASS AI must reason only from the same observations, models, budgets and interventions available to a human BLACKGLASS player. Difficulty changes model calibration, attention budget and response speed, never cheating access to hidden holder truth.
+- When human plays BLACKGLASS, HYDRA agents use their synthetic trust/intent/credibility logic as the opposing controller.
+- Support an omniscient post-mission replay that displays ground truth alongside what each side believed at each decision.
+
+HYDRA PLAYER SYSTEMS
+The HYDRA player controls a NETWORK, not one immortal avatar. Control begins with the first active holder and can transfer to another descendant holder if the original becomes unavailable or responsibility is intentionally passed onward.
+Track: Trust Capital, Credibility/Proof, Branch Independence, Reach, Fuzzy Heat/Pressure, Time and Network Health.
+HYDRA actions are data-driven, high-level game commands: contact trusted person, pass responsibility, duplicate/preserve/split archive forms, abstract verification/corroboration, hold/limited/staged/public release, delay, abandon compromised branch, seek public/legal shield, transfer control, abstract noise/decoy action. Resolve through stats/opportunity windows; do not encode practical real-world surveillance defeat techniques.
+HYDRA victory is not raw copy count or one upload. It requires credible independent meaningful branches such that the information reproduction number remains above 1 after an affordable BLACKGLASS response package. Score disclosure quality, credibility, network survival, reach and collateral human cost.
+
+SAFETY / FICTION BOUNDARY
+This is a fictional satirical game. All surveillance data must be synthetically generated; do not integrate real surveillance systems, private databases or personal data. Private residences and nonpublic security layouts must be fictionalized. Dark interventions may exist as abstract strategic commands, but do not implement real-world operational assassination/sabotage instructions, poison formulas, weapon construction, sniper-position calculations, or real target vulnerabilities. Use generalized categories such as DETAIN, COVERT REMOVAL, TARGETED STRIKE, GRID BLACKOUT, NETWORK ISOLATION, etc. Late-game black-program systems may be deliberately science-fictional.
+
+TECHNICAL FOUNDATION
+Use TypeScript + Vite + React.
+Use Three.js through React Three Fiber where 3D adds value.
+Use Drei for useful camera/helpers.
+Use Zustand for initial authoritative application/game state. If high-count entity iteration benefits from ECS, introduce Miniplex or a small data-oriented ECS without rewriting UI state around it.
+Use MapLibre GL JS + react-map-gl for geographic camera/maps.
+Use a maintained react-three-map-style bridge for georeferenced R3F content at tactical city scale.
+Use deck.gl for large numbers of points, paths, heatmaps, arcs and regional overlays.
+Use a graph renderer such as three-forcegraph/r3f-forcegraph or a purpose-built WebGL/SVG graph for social/network topology.
+Use Web Workers for synthetic population generation, path/contact simulation, Hydra aggregation and expensive prediction calculations.
+Use IndexedDB or equivalent local persistence with versioned save schemas.
+Use semantic DOM HUD components. Do NOT draw ordinary dashboard chrome into WebGL.
+Use Charts.css or equivalent semantic CSS charts for accessible resource/confidence/exposure visualizations.
+Rapier is optional and should NOT become the basis of crowd/traffic simulation. Use graph movement and occupancy/congestion models for most world actors.
+
+REPOSITORIES / PRIOR ART TO STUDY
+- cartesiancs/map3d: study OSM -&gt; R3F buildings/roads and GLB export. Reuse only under its actual license and retain required notices.
+- MapLibre GL JS / react-map-gl: geographic foundation.
+- a maintained react-three-map implementation: geographic R3F bridge.
+- NASA-AMMOS/3DTilesRendererJS: optional streamed 3D Tiles, not mandatory for the vertical slice.
+- noncomputable/AgentMaps: study real-map agent architecture and contagion demo; port ideas, do not make Leaflet the renderer.
+- janarosmonaliev/pandemic-simulation: study simple explicit agent/contact/spread logic as conceptual prototype.
+- three-forcegraph / r3f-forcegraph: relationship and information network visualization.
+- deck.gl: large geospatial data layers.
+- owenyuwono/gaia: procedural grass ideas/system if compatible.
+- owenyuwono/dryad: procedural flora ideas/system if compatible.
+- owenyuwono/poseidon: optional WebGPU ocean for later coastal/global spectacle.
+- owenyuwono/demiurge: study procedural terrain/weather/atmosphere concepts for later nonurban/global views.
+- owenyuwono/apate: study efficient surface-relief/material approaches.
+Do not blindly copy unlicensed code. Create THIRD_PARTY.md with repo, commit, license and notices. If a referenced repo is incomplete, stale or incompatible, implement the required behavior cleanly yourself.
+
+ARCHITECTURE CONTRACT
+The simulation is the source of truth. Rendering is a derived view.
+Use explicit commands for player actions so runs can be logged/replayed.
+Use deterministic named RNG streams and scenario seeds.
+A scenario seed + command log + versioned rules should reproduce a run.
+Never make a Three.js Object3D the authoritative agent record.
+
+DATA MODEL
+Implement typed entities approximately as follows, adapting where needed:
+Person: id, synthetic identity, routine, social circles, trust edges, devices, behavior traits, reach, intent, knowledge/copies, observation confidence, current status.
+Device: id, type, owner probabilities, online state, synthetic observations, copy IDs.
+Vehicle: id, associated people, route, observation state.
+Location: id, geo position/area, type, access properties, population/traffic state.
+Observation: source type, timestamp, entity hypotheses, confidence, payload and decay.
+SocialEdge: person A/B, relationship category, trust, contact frequency, shared history, recent activation.
+InfoCopy: id, parentId, holder, form (full/excerpt/index/screenshot/summary), size, integrity, credibility, exposure, replication potential, descendants, status.
+Intervention: target types, prerequisites, activation delay, success probability, reversibility, publicity, suspicion delta, infrastructure impact, authority cost, budget cost, attribution risk, Hydra effect, cooldown.
+
+SYNTHETIC LIFE GENERATOR
+Generate coherent synthetic lives before the incident begins. Each important person needs:
+- synthetic identity and occupation
+- household/home/work anchors
+- recurring schedule and route preferences
+- social circles: family, work, old friends, media/professional, online, organizations
+- weighted trust relationships
+- devices and ownership confidence
+- behavior traits: caution, curiosity, loyalty, risk tolerance, stress response
+- reach/amplification potential
+- baseline historical observations sufficient to detect routine deviation
+Use deterministic seeds. Generate meaningful false positives and benign anomalies.
+
+SIMULATION LOD
+LOD0 Hero/selected: full movement/decision state and render.
+LOD1 Local: explicit road/pedestrian graph movement and event generation.
+LOD2 Regional: discrete travel/contact events, no continuous rendering.
+LOD3 Aggregate: population/network compartments with sampled representative nodes.
+LOD4 Global: city/server/network aggregates plus explicit high-value nodes.
+Promotion/demotion between LODs must preserve causality and copy genealogy.
+
+SURVEILLANCE / WATCH INDEX
+All feeds are fictional generated observations. Implement broad categories:
+- road/camera/plate-reader-like hits
+- access/badge/transit/hotel-like events
+- device/network/login/IP-region-like observations
+- social metadata/public-graph observations
+- synthetic financial/travel clues
+- aerial/strategic observation windows
+- human source/field reports
+Every observation has confidence, timestamp and source. Distinguish identification from association (seeing a car != proving a person is inside).
+Create a Watch Index around people by social circles rather than a flat watchlist. Each circle shows risk, coverage, unknown nodes and resource spend.
+
+ANOMALY / PREDICTION
+Compare current behavior with each synthetic baseline. Explain anomalies with features, not magic scores alone.
+Provide at least three fictional analysis models that can disagree. Example personalities: ATHENA movement/routine, ORACLE social/trust, JANUS conservative/unknown-focused.
+Player can pin evidence and create hypotheses. Models return confidence distributions, not guaranteed truth.
+
+HYDRA INFORMATION MODEL
+Information is a first-class graph entity.
+Levels: Original -&gt; Compromised -&gt; Duplicated -&gt; Networked -&gt; Digital -&gt; Mirrored -&gt; Viral -&gt; Cultural Knowledge.
+Every child copy points to a parent. Full archives, excerpts, indices and summaries have different size/credibility/replication properties.
+At small scale, explicit people create copies through trust/opportunity/intent events.
+At large scale, aggregate low-value copies while keeping important branches explicit.
+Track known copies, estimated copies, estimate confidence, exposure, credibility, public suspicion, and Hydra reproduction number H (expected recoverable descendants per active copy/window).
+Practical containment fails when H stays above 1 across independent networks and no affordable intervention set can reduce it.
+
+STREISAND SYSTEM
+Public suspicion/demand must react to visible suppression and unexplained disruptions. Heavy interventions can destroy copies while increasing demand, media attention and mirror creation. This feedback loop is essential. Nothing should be a clean win button.
+
+INTERVENTIONS
+Build a data-driven intervention catalog. Initial vertical slice needs administrative, information, network, mobility, field and infrastructure options. Kinetic/destructive options are abstract strategic commands only. Later tiers may add fictional black-program technologies.
+Every action has prerequisites, delay, probability, cost, publicity, suspicion effect, attribution risk, infrastructure impact and Hydra effect.
+Actions should transform the problem: a blackout stops connectivity but loses sensors and creates traffic; a detention frightens contacts; a server isolation reveals backups; spectacular force creates public curiosity.
+
+WORLD / MAP
+First vertical slice: one dense public/government-style urban leak point and surrounding several-kilometer neighborhood. Use permitted OpenStreetMap-derived road/building data and a dark intelligence-map style. Do not reproduce private real-world residence layouts.
+Build road/intersection graph for traffic and agent routes.
+Create tactical city mode, later strategic country mode and planet/network mode. At high zoom levels replace meshes with icons/aggregates rather than retaining full geometry.
+
+ASSET STRATEGY
+Target visible content mix: ~60% procedural/geographic, ~30% licensed library assets, ~10% custom.
+Do NOT hand-model ordinary streets, grass, trees or thousands of buildings.
+Procedural/data: geography, buildings, vegetation, terrain, water/weather when needed, population variation, VFX and surveillance overlays.
+Licensed library target eventually ~250-350 bases: 40-60 vehicles, 25-40 rigged humans, 50-80 street props, 70-100 interior props, 20-30 aircraft/maritime/satellite, 15-25 surveillance/infrastructure and miscellaneous props.
+Custom hero target eventually ~40-70: recurring characters, hero interiors/locations, signature archive props and fictional black-program technology.
+Create ASSET_REGISTRY.json with creator, source, license, attribution, commercial/modification permissions, import settings and optimization status. Prefer CC0/CC-BY/explicit commercial-friendly assets; reject ambiguous/NC/usually ND/editorial assets for normal shipping without review.
+
+UI / HUD
+Create a beautiful dark geospatial intelligence workspace with restrained scanline/glow treatment, not a generic hacker neon mess.
+Required panels:
+- global alert strip + game clock + pause/speed
+- central map
+- Watch Index / prioritized circles
+- selected target dossier
+- social graph
+- device associations
+- copy genealogy
+- event timeline
+- analyst hypothesis board
+- intervention drawer
+- resources/authority
+- public suspicion/media monitor
+- strategic infrastructure overlays
+Cross-highlight the same entity across all panels. Build keyboard navigation and command palette. UI must be responsive and accessible, not color-only.
+
+VERTICAL SLICE CONTENT
+Implement ONE complete local scenario before expanding scope, playable from EITHER perspective from the title screen:
+SHARED:
+- one fictionalized/public leak-point environment
+- 500-1,000 explicit synthetic local lives plus background aggregates
+- one initial carrier
+- at least 4 meaningful social circles and unknown contacts
+- at least 4 device/observation categories
+- at least 2 archive forms (full + small extract/index)
+- contact/handoff that spawns descendant copies
+- an upload/release event that increases global awareness
+- public suspicion/Streisand feedback
+- pause, 1x, 2x, 5x for single player
+- save/load, deterministic seed and omniscient post-run replay
+BLACKGLASS PLAY:
+- false positives and at least one benign high anomaly
+- prediction models that can disagree
+- Watch Index/resource allocation
+- 8-12 interventions with real trade-offs
+- containment/end-state scoring
+HYDRA PLAY:
+- active-holder selection and transfer of player control between descendant holders
+- trusted-network panel with perceived trust and branch independence
+- duplicate/split/archive-form decisions
+- credibility/authentication investment
+- limited/staged/public release decisions
+- fuzzy state-pressure/heat feedback without revealing hidden surveillance state
+- bounded BLACKGLASS AI using observation-limited reasoning
+- at least three disclosure outcomes including clean, pyrrhic and contained/discredited variants
+
+PLAYER SCORE
+BLACKGLASS track at least: Containment, Secrecy, Public Trust, System Stability, Attribution Risk, Authority/Budget spent. A run can technically contain the archive while catastrophically damaging society; grade that outcome accordingly.
+HYDRA track at least: Disclosure Durability, Credibility, Independent Branches, Reach, Network Survival, Public Understanding and human/social cost. A run can release the material but destroy its credibility or network; grade those outcomes separately.
+
+RENDERING / PERFORMANCE
+Use deck.gl/instancing for thousands of markers. Do not make one React component or skinned mesh per background agent.
+Use graph clustering and render only relevant neighborhoods.
+Use worker-side simulation and event queues.
+Use KTX2/Basis or equivalent compressed textures for shipped assets.
+Maintain debug metrics: FPS, draw calls, GPU time if available, explicit agents, aggregate agents, simulation tick time, event queue, copy counts by LOD, graph nodes and memory estimate.
+Visual effects must degrade gracefully without changing simulation truth.
+
+TESTING
+Unit test deterministic RNG, social generation, confidence decay, copy parentage, Hydra math, intervention costs and save migrations.
+Property/invariant tests: no orphan copies, no invalid timestamps, no negative resource balances, valid routes, deterministic replays.
+Playwright browser tests: launch, map selection, target selection, pin evidence, speed/pause, execute an intervention, produce child copy, save/load.
+Add screenshot regression for the main workstation layout.
+
+IMPLEMENTATION ORDER — DO NOT SKIP
+0. Repo/tooling/contracts/THIRD_PARTY/asset registry/test harness.
+1. Ugly BLACKGLASS complete loop on a simple map: carrier -&gt; handoff -&gt; child copy -&gt; one intervention -&gt; verify -&gt; end state.
+1B. Before art, make the SAME scenario playable as HYDRA: choose trusted branch -&gt; duplicate -&gt; authenticate -&gt; release while a bounded BLACKGLASS AI responds; support control transfer to descendant holder and post-run omniscient replay. Both perspectives must be fun with dots/lines/text.
+2. MapLibre/OSM local geography and synthetic life generator.
+3. Watch Index, observations, false positives, anomaly/prediction models.
+4. Full Hydra genealogy and aggregate transition.
+5. Intervention trade-off system + public suspicion.
+6. Final HUD/graph/timeline UX and keyboard workflow.
+7. Asset import/LOD/procedural vegetation and presentation polish.
+8. Only then build national/global scale and fictional black-program spectacle.
+
+QUALITY BAR
+The vertical slice must already be addictive when agents are simple dots. Do not hide weak simulation behind graphics. The interface must feel like professional intelligence software that secretly behaves like a strategy game. Make data dense but legible. Every alert should be inspectable. Every important number should have provenance. Every intervention should create a new decision. Every zoom-out should feel like a consequence of lost containment.
+
+DELIVERABLES
+- Running Vite project.
+- README with install/run/build/deploy.
+- docs/ containing architecture, simulation, Hydra, surveillance, intervention, asset and scenario specs.
+- THIRD_PARTY.md and ASSET_REGISTRY.json.
+- One complete dual-perspective playable vertical-slice scenario selectable as BLACKGLASS or HYDRA.
+- Deterministic tests and Playwright smoke suite, including strict perspective-information isolation tests.
+- Example scenario manifest and synthetic-life seed.
+- Clear TODO roadmap for national/global expansion without prematurely implementing unnecessary systems.
+
+WORK STYLE
+Inspect and reuse well-licensed prior art where it saves time, but integrate it into a coherent architecture rather than gluing demos together. Keep TypeScript strict. Prefer simple, testable data structures. Keep renderer and simulation decoupled. Use sub-agents when available for geospatial pipeline, simulation/Hydra, HUD/UX, asset pipeline and QA, then integrate and test the complete game yourself. Do not stop at scaffolding: the final result must launch into a playable mission with the core loop functioning end-to-end.</div></article><footer class="footer">BLACKGLASS // HYDRA — complete game plan microsite. Static HTML/CSS/JS. Charts.css-enhanced with local fallback styling.</footer></main></div><script src="assets/site.js"></script></body></html>

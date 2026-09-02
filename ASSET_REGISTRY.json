@@ -1,0 +1,5 @@
+{
+  "$schema": "asset-registry-v1",
+  "$comment": "Every external asset must be registered BEFORE import. The asset gate (npm run asset:gate) fails on missing license/attribution fields or NC/ND entries without a documented exception. The harness currently ships zero external assets — all visuals are procedural.",
+  "entries": []
+}
