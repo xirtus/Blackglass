@@ -35,6 +35,6 @@ rules reproduce any run; saves are replay inputs plus a fast-load snapshot.
 - **Phase 1B (done):** both perspectives selectable from the title screen,
   bounded BLACKGLASS AI, HYDRA workspace + disclosure actions, control
   transfer, replay.
-- **Phase 2+ (designed, not built):** MapLibre geography, synthetic
+- **Phase 2+ (designed, not built):** MapLibre geography, scenario
   population at 500–1,000 explicit, full HUD polish, national/global scale.
   See `08-roadmap.md`.

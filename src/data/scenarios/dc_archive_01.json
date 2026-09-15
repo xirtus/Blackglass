@@ -7,7 +7,7 @@
     "type": "public_archive",
     "name": "Meridian Annex — Public Records Reading Room",
     "locationId": "bld_archive",
-    "fictionalInterior": true
+    "restrictedInterior": true
   },
   "population": { "explicit": 24, "background": 1200 },
   "archive": {
@@ -64,7 +64,7 @@
     ]
   },
   "buildings": [
-    { "id": "bld_archive", "pos": { "x": 0, "z": 0 }, "w": 180, "d": 120, "h": 26, "kind": "archive", "name": "Meridian Annex (fictionalized public records)" },
+    { "id": "bld_archive", "pos": { "x": 0, "z": 0 }, "w": 180, "d": 120, "h": 26, "kind": "archive", "name": "Meridian Annex Public Records" },
     { "id": "bld_gov1", "pos": { "x": -400, "z": 40 }, "w": 140, "d": 90, "h": 34, "kind": "government", "name": "District Services" },
     { "id": "bld_gov2", "pos": { "x": 420, "z": -60 }, "w": 120, "d": 80, "h": 22, "kind": "government", "name": "Registrar Office" },
     { "id": "bld_off1", "pos": { "x": -180, "z": -330 }, "w": 100, "d": 70, "h": 30, "kind": "office", "name": "Courier & Legal Co." },
@@ -110,7 +110,7 @@
       "public": true,
       "anchorLocationIds": ["bld_archive", "bld_off2", "bld_transit"],
       "tags": ["mcp", "news", "risk"],
-      "notes": "Offline deterministic stand-in for World Monitor style current-events ingestion."
+      "notes": "Offline deterministic adapter for World Monitor style current-events ingestion."
     },
     {
       "id": "ghost_case_graph",
@@ -133,7 +133,7 @@
       "name": "WIRETAPPER // RF Trace Pack",
       "kind": "radioSpectrum",
       "providerUrl": "https://x.com/jaydarcy/status/1945783394871558315",
-      "license": "External tool reference; scenario uses synthetic emissions",
+      "license": "External tool reference; scenario uses modeled emissions",
       "mode": "offline",
       "enabled": true,
       "reliability": 0.57,
@@ -149,7 +149,7 @@
       "name": "AUTHORIZED CAMERA PACK // Street Nodes",
       "kind": "publicCamera",
       "providerUrl": "local://scenario/authorized-camera-pack",
-      "license": "Fictionalized/authorized scenario data",
+      "license": "Authorized scenario data",
       "mode": "offline",
       "enabled": true,
       "reliability": 0.66,
@@ -158,7 +158,7 @@
       "public": false,
       "anchorLocationIds": ["n2", "n7", "n12", "n17", "n21"],
       "tags": ["camera", "authorized", "street"],
-      "notes": "Synthetic open-camera observations mapped to scenario nodes."
+      "notes": "Open-camera observations mapped to scenario nodes."
     },
     {
       "id": "insecam_public_directory",

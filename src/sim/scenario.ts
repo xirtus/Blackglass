@@ -1,6 +1,6 @@
 /**
  * Scenario manifests are authored as data (12-content-pipeline). The
- * generator fills the surrounding world with coherent synthetic lives;
+ * generator fills the surrounding world with coherent modeled lives;
  * the manifest only declares leak origin, heroes, constraints and beats.
  */
 import type { Vec2 } from './types'
@@ -44,7 +44,7 @@ export interface ScenarioManifest {
     type: 'public_archive' | 'courthouse' | 'campus' | 'station' | 'datacenter' | 'estate'
     name: string
     locationId: string
-    fictionalInterior: boolean
+    restrictedInterior: boolean
   }
   population: {
     explicit: number

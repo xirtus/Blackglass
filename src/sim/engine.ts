@@ -10,7 +10,7 @@ import type { Command, Difficulty, FactionId, Perspective } from '@/core/command
 import { EventLog, EventQueue, makeEvent } from '@/core/events'
 import { hashString, RngStreams } from '@/core/rng'
 import { parseSave, SAVE_SCHEMA_VERSION, type CampaignState, type SaveGamePayload, type SaveSettings, serializeSave } from '@/core/save'
-import { generateSyntheticLives, locationsFromManifest } from './life'
+import { generateScenarioLives, locationsFromManifest } from './life'
 import { getIntervention, prerequisitesMet, canAfford, cooldownRemaining } from './interventionCatalog'
 import { selectVisibleState, type ViewModel } from './perspective'
 import { validateScenario, type ScenarioManifest } from './scenario'
@@ -104,13 +104,13 @@ export class GameEngine {
     const ctx = this.context()
     const state = ctx.state
 
-    // Locations from the manifest (public/controlled/private fiction).
+    // Locations from the manifest.
     const locations = locationsFromManifest(this.manifest)
     for (const l of locations) state.entities.locations.add(l)
     state.osint.sources = structuredClone(this.manifest.osintSources ?? [])
 
-    // Synthetic lives: identity, routines, social circles, devices.
-    const lives = generateSyntheticLives(this.streams, this.manifest, locations)
+    // Scenario lives: identity, routines, social circles, devices.
+    const lives = generateScenarioLives(this.streams, this.manifest, locations)
     for (const p of lives.people) state.entities.people.add(p)
     for (const d of lives.devices) state.entities.devices.add(d)
     for (const v of lives.vehicles) state.entities.vehicles.add(v)
@@ -174,7 +174,7 @@ export class GameEngine {
         payload: { archiveId: this.manifest.archive.id, bytes: this.manifest.archive.bytes, dossier: dossier.codename },
         provenance: { source: 'scenario.beat', reason: 'missing_copy' },
       }),
-      makeEvent(0, 'SIM_INFO', `Scenario ${this.manifest.id} initialized with ${lives.people.length} explicit synthetic lives.`, {
+      makeEvent(0, 'SIM_INFO', `Scenario ${this.manifest.id} initialized with ${lives.people.length} explicit lives.`, {
         severity: 'info',
         subjects: [],
         payload: { seed: this.manifest.seed },

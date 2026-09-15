@@ -5,7 +5,7 @@ Implementation of [`site/12-content-pipeline.html`](../site/12-content-pipeline.
 ## Manifest schema
 
 See `src/sim/scenario.ts` (`ScenarioManifest`). Shipped scenario:
-`src/data/scenarios/dc_archive_01.json` — a fictionalized public records
+`src/data/scenarios/dc_archive_01.json` — a restricted public records
 annex ("Meridian Annex"), 24 explicit lives + background aggregate,
 one carrier, six watch circles, 12 interventions, 25-minute window.
 

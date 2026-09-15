@@ -16,7 +16,7 @@ React UI / command layer (src/ui, src/store)
 │   ├── systems (src/sim/systems.ts) — schedule, movement, contact,
 │   │   handoff, observation, confidence decay, anomaly, hydra,
 │   │   intervention, end-state
-│   ├── synthetic life generator (src/sim/life.ts)
+│   ├── scenario life generator (src/sim/life.ts)
 │   ├── intervention catalog (src/data/interventions.json)
 │   └── controllers (src/sim/controllers.ts) — human + bounded AI
 │

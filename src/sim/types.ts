@@ -180,7 +180,7 @@ export interface OsintSignal {
   severity: 'info' | 'notice' | 'warning' | 'critical'
   tags: string[]
   public: boolean
-  verification: 'single-source' | 'corroborated' | 'fictionalized'
+  verification: 'single-source' | 'corroborated' | 'modeled'
 }
 
 export interface Baseline {

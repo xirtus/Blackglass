@@ -1,5 +1,17 @@
 {
   "$schema": "asset-registry-v1",
-  "$comment": "Every external asset must be registered BEFORE import. The asset gate (npm run asset:gate) fails on missing license/attribution fields or NC/ND entries without a documented exception. The harness currently ships zero external assets — all visuals are procedural.",
-  "entries": []
+  "$comment": "Every external asset must be registered BEFORE import. The asset gate (npm run asset:gate) fails on missing license/attribution fields or NC/ND entries without a documented exception.",
+  "entries": [
+    {
+      "id": "mixamo-operative-threejs-soldier",
+      "creator": "Adobe Mixamo / Three.js example maintainers",
+      "source": "https://github.com/mrdoob/three.js/blob/dev/examples/models/gltf/Soldier.glb",
+      "license": "Adobe Mixamo royalty-free game-use terms; Three.js repository MIT",
+      "attribution": "Mixamo-rigged animated character distributed with the Three.js examples",
+      "commercialAllowed": true,
+      "modificationAllowed": true,
+      "acquired": "2026-09-04",
+      "sha256": "dfb230fc1f942f259dd00281a1186953ad602fc5d69067ce63e24b2aa439736b"
+    }
+  ]
 }

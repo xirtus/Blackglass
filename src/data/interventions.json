@@ -19,7 +19,7 @@
     "hydraDelta": 0.02,
     "cooldown": 300,
     "narrativeTags": ["low_spectacle", "reversible"],
-    "description": "Freeze synthetic access accounts tied to the subject. Low spectacle, slow, mostly reversible — but the subject may notice."
+    "description": "Freeze access accounts tied to the subject. Low spectacle, slow, mostly reversible — but the subject may notice."
   },
   {
     "id": "travel_restriction",
@@ -195,7 +195,7 @@
     "hydraDelta": -0.02,
     "cooldown": 1200,
     "narrativeTags": ["field", "observation"],
-    "description": "Assign a field asset to follow the subject's synthetic public movements. Higher-context observations; exposure risk if noticed."
+    "description": "Assign a field asset to follow the subject's public movements. Higher-context observations; exposure risk if noticed."
   },
   {
     "id": "detention",
@@ -260,7 +260,7 @@
     "attributionRisk": 0.4,
     "hydraDelta": 0.1,
     "cooldown": 7200,
-    "narrativeTags": ["fictional", "black_program"],
-    "description": "Fictional directed-energy demonstration over a sector: an unexplained, brief eclipse of the local spectrum. Deliberately science-fictional."
+    "narrativeTags": ["black_program"],
+    "description": "Directed-energy demonstration over a sector: an unexplained, brief eclipse of the local spectrum."
   }
 ]

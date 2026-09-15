@@ -431,7 +431,7 @@ export function observationSystem(ctx: SimContext, _dt: number): void {
       const people = state.entities.people.all()
       const p = people[obsRng.int(0, people.length - 1)]
       if (p && p.status === 'free' && obsRng.chance(0.5)) {
-        emit('financial', 'FIN-SYNTH', { kind: 'association', subjectIds: [p.id], pos: p.pos, confidence: 0.55, payload: 'synthetic purchase anomaly candidate' })
+        emit('financial', 'FIN-ANOM', { kind: 'association', subjectIds: [p.id], pos: p.pos, confidence: 0.55, payload: 'purchase anomaly candidate' })
       }
     } else if (source === 'aerial') {
       const node = obsRng.pick(manifest.graph.nodes)
@@ -553,7 +553,7 @@ export function osintSystem(ctx: SimContext, _dt: number): void {
       const device = subject?.devices.length ? state.entities.devices.get(rng.pick(subject.devices)) : undefined
       emit(source, {
         title: device ? `${device.kind} emission matched local trace` : 'unattributed local emission',
-        summary: 'A synthetic RF trace intersected a known movement corridor.',
+        summary: 'An RF trace intersected a known movement corridor.',
         subjectIds: subject ? [subject.id] : [],
         locationId: anchorId.startsWith('bld_') ? anchorId : null,
         pos: subject?.pos ?? pos,
@@ -594,7 +594,7 @@ export function osintSystem(ctx: SimContext, _dt: number): void {
         severity: obs.confidence > 0.48 ? 'warning' : 'notice',
         tags: ['camera', 'authorized', 'association'],
         public: false,
-        verification: 'fictionalized',
+        verification: 'modeled',
       })
     } else if (source.kind === 'press') {
       emit(source, {
@@ -950,7 +950,7 @@ function applyInterventionEffects(ctx: SimContext, def: { id: string; category: 
     case 'signal_eclipse': {
       for (const d of state.entities.devices.all()) d.online = false
       state.infrastructure.telecom = 'down'
-      effects.push('Spectrum eclipse in effect (fictional system).')
+      effects.push('Spectrum eclipse in effect.')
       break
     }
     default:

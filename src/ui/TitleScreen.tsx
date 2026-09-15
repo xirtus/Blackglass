@@ -30,7 +30,7 @@ export function TitleScreen() {
   return (
     <div className="title-screen" data-testid="title-screen">
       <div className="title-inner">
-        <p className="title-kicker">{dossier.classification} · COMPOSITE LEAK DOSSIER · REV 1.1</p>
+        <p className="title-kicker">{dossier.classification} · CLASSIFIED LEAK DOSSIER · REV 1.1</p>
         <h1 className="title-word">BLACKGLASS <span className="title-sep">//</span> HYDRA</h1>
         <p className="title-sub">
           {dossier.codename}: {dossier.hook}
@@ -46,7 +46,7 @@ export function TitleScreen() {
           <button className={`perspective-card card-blackglass ${humanFaction === 'BLACKGLASS' ? 'card-active' : ''}`} onClick={() => pick('BLACKGLASS')} data-testid="pick-blackglass">
             <span className="card-title">CONTAINMENT</span>
             <span className="card-desc">
-              Operate the fictional intelligence platform. Infer carriers from synthetic observations, allocate scarce surveillance, and contain the archive before replication outruns you.
+              Operate the intelligence platform. Infer carriers from sensor observations, allocate scarce surveillance, and contain the archive before replication outruns you.
             </span>
             <span className="card-tags">OBSERVE · INFER · INTERVENE</span>
           </button>
@@ -60,9 +60,9 @@ export function TitleScreen() {
           <button className={`perspective-card card-spectator ${humanFaction === 'SPECTATOR' ? 'card-active' : ''}`} onClick={pickSpectator} data-testid="pick-spectator">
             <span className="card-title">AI WATCH</span>
             <span className="card-desc">
-              Watch both bounded faction controllers play the same deterministic crisis. Swap workstations while the simulation resolves through observations, OSINT signals, interventions and releases.
+              Watch both bounded faction controllers play the same deterministic crisis. Swap workstations while the crisis resolves through observations, OSINT signals, interventions and releases.
             </span>
-            <span className="card-tags">SIMULATE · OBSERVE · REPLAY</span>
+            <span className="card-tags">MODEL · OBSERVE · REPLAY</span>
           </button>
         </div>
 

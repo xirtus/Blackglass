@@ -20,8 +20,16 @@ vendored in this repository.
 
 | Source | License / Terms | Use |
 | --- | --- | --- |
-| OpenStreetMap public tile layer | OpenStreetMap data under ODbL; tile service subject to OSM tile usage policy | Real street/world atlas backdrop with visible in-app attribution; no tiles vendored |
+| Stadia Maps Alidade Smooth raster tiles | Stadia Maps / OpenMapTiles terms; OpenStreetMap data under ODbL | Real street/world atlas backdrop with visible in-app attribution; no tiles vendored |
 | hls.js CDN runtime | Apache-2.0 | HLS playback for public camera feeds that expose `.m3u8` streams |
+
+## Character systems and assets
+
+| Source | License / Terms | Use |
+| --- | --- | --- |
+| Xirtus HumanKit runtime | Project-local reusable source | Seeded civilian bodies, clothing, rigging, LODs, and animation state machine |
+| Three.js `Soldier.glb` / Adobe Mixamo | Three.js MIT repository; [Adobe Mixamo royalty-free game use](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html) | Field operative with embedded Idle, Walk, and Run clips; SHA-256 recorded in `ASSET_REGISTRY.json` |
+| 3JSE Harness v0.1 | Project-local coordination framework | Reuse ladder, sector transition, deterministic-agent, and visual QA contracts for street operations |
 
 ## Dev dependencies
 

@@ -1,20 +1,20 @@
 import { describe, expect, it } from 'vitest'
 import { RngStreams } from '@/core/rng'
-import { generateSyntheticLives, locationsFromManifest } from './life'
+import { generateScenarioLives, locationsFromManifest } from './life'
 import { manifest } from '@/data/scenarios'
 
-describe('synthetic life generator', () => {
+describe('scenario life generator', () => {
   const locations = locationsFromManifest(manifest)
 
   it('is deterministic for a given seed', () => {
-    const a = generateSyntheticLives(new RngStreams(184203), manifest, locations)
-    const b = generateSyntheticLives(new RngStreams(184203), manifest, locations)
+    const a = generateScenarioLives(new RngStreams(184203), manifest, locations)
+    const b = generateScenarioLives(new RngStreams(184203), manifest, locations)
     expect(a.people.map((p) => [p.name, p.occupation, p.pos])).toEqual(b.people.map((p) => [p.name, p.occupation, p.pos]))
     expect(a.edges.map((e) => [e.a, e.b, e.trust])).toEqual(b.edges.map((e) => [e.a, e.b, e.trust]))
   })
 
   it('generates the requested population with coherent anchors', () => {
-    const lives = generateSyntheticLives(new RngStreams(184203), manifest, locations)
+    const lives = generateScenarioLives(new RngStreams(184203), manifest, locations)
     expect(lives.people).toHaveLength(manifest.population.explicit)
     for (const p of lives.people) {
       expect(locations.some((l) => l.id === p.homeId)).toBe(true)
@@ -33,7 +33,7 @@ describe('synthetic life generator', () => {
   })
 
   it('assigns hero actors their authored roles', () => {
-    const lives = generateSyntheticLives(new RngStreams(184203), manifest, locations)
+    const lives = generateScenarioLives(new RngStreams(184203), manifest, locations)
     const carrier = lives.people.find((p) => p.roleTags.includes('carrier_a'))
     expect(carrier).toBeDefined()
     expect(carrier!.traits.intent).toBe('deliberate')
@@ -43,7 +43,7 @@ describe('synthetic life generator', () => {
   })
 
   it('social edges connect existing people with valid weights', () => {
-    const lives = generateSyntheticLives(new RngStreams(184203), manifest, locations)
+    const lives = generateScenarioLives(new RngStreams(184203), manifest, locations)
     const ids = new Set(lives.people.map((p) => p.id))
     for (const e of lives.edges) {
       expect(ids.has(e.a)).toBe(true)
@@ -55,7 +55,7 @@ describe('synthetic life generator', () => {
   })
 
   it('baselines exist for every person', () => {
-    const lives = generateSyntheticLives(new RngStreams(184203), manifest, locations)
+    const lives = generateScenarioLives(new RngStreams(184203), manifest, locations)
     for (const p of lives.people) {
       expect(lives.baselines[p.id]).toBeDefined()
       expect(lives.baselines[p.id].historyDepth).toBe(48)

@@ -6,7 +6,7 @@ import { create } from 'zustand'
 import type { QualityTier } from '@/core/save'
 import { DEFAULT_ATLAS_CITY_ID } from '@/data/atlasLocations'
 
-export type AtlasScale = 'room' | 'city' | 'world'
+export type AtlasScale = 'room' | 'street' | 'city' | 'world'
 
 export type PanelId =
   | 'watchIndex'
@@ -34,6 +34,7 @@ interface UIStore {
   atlasScale: AtlasScale
   atlasFocusId: string | null
   atlasCityId: string
+  atlasStreetHotspotId: string | null
 
   select: (id: string | null) => void
   togglePin: (id: string) => void
@@ -46,6 +47,7 @@ interface UIStore {
   setAtlasScale: (scale: AtlasScale) => void
   setAtlasFocus: (id: string | null) => void
   setAtlasCity: (id: string) => void
+  setAtlasStreetHotspot: (id: string | null) => void
 }
 
 export const useUIStore = create<UIStore>((set) => ({
@@ -60,6 +62,7 @@ export const useUIStore = create<UIStore>((set) => ({
   atlasScale: 'city',
   atlasFocusId: null,
   atlasCityId: DEFAULT_ATLAS_CITY_ID,
+  atlasStreetHotspotId: null,
 
   select: (id) => set({ selectedId: id }),
   togglePin: (id) =>
@@ -73,4 +76,5 @@ export const useUIStore = create<UIStore>((set) => ({
   setAtlasScale: (atlasScale) => set({ atlasScale }),
   setAtlasFocus: (atlasFocusId) => set({ atlasFocusId }),
   setAtlasCity: (atlasCityId) => set({ atlasCityId }),
+  setAtlasStreetHotspot: (atlasStreetHotspotId) => set({ atlasStreetHotspotId }),
 }))

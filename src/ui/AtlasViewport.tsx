@@ -1,7 +1,10 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent, type WheelEvent } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type PointerEvent, type WheelEvent } from 'react'
 import { ATLAS_LOCATIONS, getAtlasLocation, type AtlasCamera, type AtlasHotspot, type AtlasLocation } from '@/data/atlasLocations'
+import { MAP_ATTRIBUTION, mapTileUrl } from '@/maps/tiles'
 import type { ViewModel } from '@/sim/perspective'
 import { useUIStore } from '@/store/ui'
+
+const StreetOperations = lazy(() => import('@/ui/StreetOperations').then((module) => ({ default: module.StreetOperations })))
 
 const TILE_SIZE = 256
 const WORLD_CENTER = { lat: 28, lon: 18 }
@@ -31,7 +34,7 @@ interface StageSize {
 
 type InteractionMode = 'rotate' | 'pan'
 type SensorMode = 'visual' | 'night' | 'thermal' | 'edge'
-type RegistryStatus = 'source-records' | 'loading' | 'official-geojson' | 'official-api' | 'unavailable'
+type RegistryStatus = 'source-records' | 'loading' | 'official-geojson' | 'official-api' | 'global-registry' | 'unavailable'
 
 interface MapLayers {
   cctv: boolean
@@ -53,12 +56,17 @@ export function AtlasViewport({ view }: AtlasViewportProps) {
   const setAtlasScale = useUIStore((s) => s.setAtlasScale)
   const atlasCityId = useUIStore((s) => s.atlasCityId)
   const setAtlasCity = useUIStore((s) => s.setAtlasCity)
+  const atlasStreetHotspotId = useUIStore((s) => s.atlasStreetHotspotId)
+  const setAtlasStreetHotspot = useUIStore((s) => s.setAtlasStreetHotspot)
   const selectedCity = getAtlasLocation(atlasCityId)
+  const selectedHotspot = selectedCity.hotspots.find((hotspot) => hotspot.id === atlasStreetHotspotId)
+    ?? selectedCity.hotspots.find((hotspot) => !hotspot.opensRoom)
+    ?? selectedCity.hotspots[0]!
 
   return (
     <div className={`atlas-viewport atlas-${atlasScale}`} data-testid="atlas-viewport">
       <div className="atlas-controls" data-testid="atlas-controls">
-        {(['room', 'city', 'world'] as const).map((scale) => (
+        {(['room', 'street', 'city', 'world'] as const).map((scale) => (
           <button key={scale} className={atlasScale === scale ? 'ctl active' : 'ctl'} onClick={() => setAtlasScale(scale)} data-testid={`atlas-${scale}`}>
             {scale.toUpperCase()}
           </button>
@@ -67,6 +75,10 @@ export function AtlasViewport({ view }: AtlasViewportProps) {
 
       {atlasScale === 'room' ? (
         <RecordsRoomBlueprint city={selectedCity} view={view} />
+      ) : atlasScale === 'street' ? (
+        <Suspense fallback={<div className="street-loading">INITIALIZING STREET OPERATIONS</div>}>
+          <StreetOperations city={selectedCity} hotspot={selectedHotspot} onExit={() => setAtlasScale('city')} />
+        </Suspense>
       ) : (
         <RealMapStage
           key={`${atlasScale}:${selectedCity.id}`}
@@ -78,22 +90,30 @@ export function AtlasViewport({ view }: AtlasViewportProps) {
             setAtlasScale('city')
           }}
           onEnterRoom={() => setAtlasScale('room')}
+          onEnterStreet={(hotspot) => {
+            setAtlasStreetHotspot(hotspot.id)
+            setAtlasScale('street')
+          }}
         />
       )}
 
-      <CityPicker
-        activeCityId={selectedCity.id}
-        onPick={(cityId) => {
-          setAtlasCity(cityId)
-          if (atlasScale === 'room') setAtlasScale('city')
-        }}
-      />
+      {atlasScale !== 'street' && (
+        <CityPicker
+          activeCityId={selectedCity.id}
+          onPick={(cityId) => {
+            setAtlasCity(cityId)
+            if (atlasScale === 'room') setAtlasScale('city')
+          }}
+        />
+      )}
 
-      <div className="atlas-caption" data-testid="atlas-caption">
-        {atlasScale === 'room' && `${selectedCity.roomLabel.toUpperCase()} // INTERNAL RECORDS-ROOM SCHEMATIC // ${selectedCity.label}`}
-        {atlasScale === 'city' && `${selectedCity.label.toUpperCase()} // OpenStreetMap street atlas, click ${selectedCity.roomLabel} to enter`}
-        {atlasScale === 'world' && 'WORLD OSINT ATLAS // public map tiles, global leak mirrors, city drill-down'}
-      </div>
+      {atlasScale !== 'street' && (
+        <div className="atlas-caption" data-testid="atlas-caption">
+          {atlasScale === 'room' && `${selectedCity.roomLabel.toUpperCase()} // INTERNAL RECORDS-ROOM SCHEMATIC // ${selectedCity.label}`}
+          {atlasScale === 'city' && `${selectedCity.label.toUpperCase()} // live street atlas, click ${selectedCity.roomLabel} to enter`}
+          {atlasScale === 'world' && 'WORLD OSINT ATLAS // public map tiles, global leak mirrors, city drill-down'}
+        </div>
+      )}
     </div>
   )
 }
@@ -117,12 +137,14 @@ function RealMapStage({
   view,
   onPickCity,
   onEnterRoom,
+  onEnterStreet,
 }: {
   mode: 'city' | 'world'
   selectedCity: AtlasLocation
   view: ViewModel | null
   onPickCity: (cityId: string) => void
   onEnterRoom: () => void
+  onEnterStreet: (hotspot: AtlasHotspot) => void
 }) {
   const mapRef = useRef<HTMLDivElement | null>(null)
   const dragRef = useRef<{ x: number; y: number; center: AtlasLocation | { lat: number; lon: number }; bearing: number } | null>(null)
@@ -132,6 +154,7 @@ function RealMapStage({
   const [interactionMode, setInteractionMode] = useState<InteractionMode>('rotate')
   const [sensorMode, setSensorMode] = useState<SensorMode>('visual')
   const [layers, setLayers] = useState<MapLayers>({ cctv: true, viewshed: true, events: true, orbit: true, extrusions: true })
+  const [layersCollapsed, setLayersCollapsed] = useState(true)
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(mode === 'city' ? selectedCity.cameras[0]?.id ?? null : null)
   const [center, setCenter] = useState(initialCenter)
   const [zoom, setZoom] = useState(initialZoom)
@@ -166,7 +189,8 @@ function RealMapStage({
     return selectedCity.hotspots.map((hotspot) => ({ ...hotspot, cityId: selectedCity.id }))
   }, [mode, selectedCity])
   const registry = usePublicCameraRegistry(selectedCity, mode)
-  const cameraPoints = mode === 'city' ? registry.cameras : []
+  const globalRegistry = useGlobalCameraRegistry(mode)
+  const cameraPoints = mode === 'city' ? registry.cameras : globalRegistry.cameras
   const signalPoints = useMemo(() => {
     if (!view || !('osintSignals' in view)) return []
     return view.osintSignals.slice(0, 8).map((signal, index) => {
@@ -181,6 +205,7 @@ function RealMapStage({
     })
   }, [selectedCity.lat, selectedCity.lon, view])
   const selectedCamera = cameraPoints.find((camera) => camera.id === selectedCameraId) ?? cameraPoints[0] ?? null
+  const selectedCameraSource = cameraSourceFor(selectedCamera, selectedCity)
 
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (event.button !== 0) return
@@ -242,22 +267,25 @@ function RealMapStage({
         layers={layers}
         sensorMode={sensorMode}
         mode={mode}
-        city={selectedCity}
+        cameraCount={cameraPoints.length}
+        hotspotCount={selectedCity.hotspots.length}
         signalCount={signalPoints.length}
+        collapsed={layersCollapsed}
+        onToggleCollapsed={() => setLayersCollapsed((value) => !value)}
         onToggle={(id) => setLayers((current) => ({ ...current, [id]: !current[id] }))}
         onSensorMode={setSensorMode}
       />
-      {mode === 'city' && (
+      {cameraPoints.length > 0 && (
         <CameraAccessPanel
           cameras={cameraPoints}
           selectedCamera={selectedCamera}
-          source={selectedCity.cameraSource}
-          registryStatus={registry.status}
+          source={selectedCameraSource}
+          registryStatus={mode === 'city' ? registry.status : globalRegistry.status}
           simTime={view?.simTime ?? 0}
           onSelect={(camera) => {
             setSelectedCameraId(camera.id)
             setCenter({ lat: camera.lat, lon: camera.lon })
-            setZoom((value) => Math.max(value, 15))
+            setZoom((value) => (mode === 'city' ? Math.max(value, 15) : Math.max(value, 4)))
             setLayers((current) => ({ ...current, cctv: true, viewshed: true }))
           }}
         />
@@ -302,6 +330,7 @@ function RealMapStage({
                 bearing={bearing}
                 showViewshed={layers.viewshed}
                 selected={camera.id === selectedCamera?.id}
+                compact={mode === 'world'}
                 onClick={() => {
                   setSelectedCameraId(camera.id)
                   setLayers((current) => ({ ...current, cctv: true, viewshed: true }))
@@ -319,12 +348,13 @@ function RealMapStage({
               onClick={() => {
                 if (mode === 'world') onPickCity(marker.cityId)
                 else if ('opensRoom' in marker && marker.opensRoom) onEnterRoom()
+                else onEnterStreet(marker)
               }}
             />
           ))}
         </div>
       </div>
-      <div className="map-attribution">OpenStreetMap contributors / public web tile layer / real public CCTV sources</div>
+      <div className="map-attribution">{MAP_ATTRIBUTION} / real public CCTV sources</div>
     </div>
   )
 }
@@ -346,6 +376,7 @@ function CameraAccessPanel({
 }) {
   const activeSourceUrl = selectedCamera?.sourceUrl ?? source.livePageUrl ?? source.url
   const media = cameraMediaFor(selectedCamera, source)
+  const isRealMedia = media.type !== 'metadata'
   return (
     <div className="camera-access-panel" data-testid="camera-access-panel">
       <div className="camera-access-head">
@@ -356,13 +387,17 @@ function CameraAccessPanel({
         {selectedCamera ? (
           <>
             <CameraMedia camera={selectedCamera} media={media} />
-            <div className="feed-crosshair" />
-            <div className="feed-osd">
-              <span>{selectedCamera.label}</span>
-              <small>
-                {formatClock(simTime)} / {media.label} / {selectedCamera.status.toUpperCase()}
-              </small>
-            </div>
+            {!isRealMedia && (
+              <>
+                <div className="feed-crosshair" />
+                <div className="feed-osd">
+                  <span>{selectedCamera.label}</span>
+                  <small>
+                    {formatClock(simTime)} / {media.label} / {selectedCamera.status.toUpperCase()}
+                  </small>
+                </div>
+              </>
+            )}
           </>
         ) : (
           <div className="feed-osd">
@@ -371,6 +406,14 @@ function CameraAccessPanel({
           </div>
         )}
       </div>
+      {selectedCamera && (
+        <div className="camera-current-row" data-testid="camera-current-row">
+          <span>{selectedCamera.label}</span>
+          <small>
+            {formatClock(simTime)} / {media.label} / {selectedCamera.status.toUpperCase()}
+          </small>
+        </div>
+      )}
       <div className="camera-source-row" data-testid="camera-source-row">
         <span>{source.name}</span>
         <a href={activeSourceUrl} target="_blank" rel="noreferrer" data-testid="camera-source-link">
@@ -404,6 +447,9 @@ function CameraMedia({ camera, media }: { camera: AtlasCamera; media: CameraMedi
   if (media.type === 'video' && media.url) {
     return <video key={media.url} className="camera-feed-media" src={media.url} poster={camera.imageUrl} autoPlay muted loop playsInline controls data-testid="camera-real-video" />
   }
+  if (media.type === 'iframe' && media.url) {
+    return <iframe key={media.url} className="camera-feed-media" src={media.url} title={`${camera.label} public camera`} loading="eager" allow="autoplay; encrypted-media; picture-in-picture" data-testid="camera-real-iframe" />
+  }
   if (media.type === 'hls' && media.url) {
     return <HlsCameraVideo key={media.url} src={media.url} poster={camera.imageUrl} />
   }
@@ -429,7 +475,9 @@ function HlsCameraVideo({ src, poster }: { src: string; poster?: string }) {
 
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = src
+      video.onerror = () => setFailed(true)
       return () => {
+        video.onerror = null
         video.removeAttribute('src')
         video.load()
       }
@@ -469,47 +517,59 @@ function LayerStack({
   layers,
   sensorMode,
   mode,
-  city,
+  cameraCount,
+  hotspotCount,
   signalCount,
+  collapsed,
+  onToggleCollapsed,
   onToggle,
   onSensorMode,
 }: {
   layers: MapLayers
   sensorMode: SensorMode
   mode: 'city' | 'world'
-  city: AtlasLocation
+  cameraCount: number
+  hotspotCount: number
   signalCount: number
+  collapsed: boolean
+  onToggleCollapsed: () => void
   onToggle: (id: keyof MapLayers) => void
   onSensorMode: (mode: SensorMode) => void
 }) {
   const layerRows: { id: keyof MapLayers; label: string; count: number }[] = [
-    { id: 'cctv', label: 'CCTV', count: mode === 'city' ? city.cameras.length : ATLAS_LOCATIONS.reduce((sum, location) => sum + location.cameras.length, 0) },
-    { id: 'viewshed', label: 'VIEWSHED', count: mode === 'city' ? city.cameras.length : 0 },
+    { id: 'cctv', label: 'CCTV', count: cameraCount },
+    { id: 'viewshed', label: 'VIEWSHED', count: cameraCount },
     { id: 'events', label: 'OSINT HITS', count: signalCount },
     { id: 'orbit', label: 'ORBIT', count: mode === 'world' ? 4 : 1 },
-    { id: 'extrusions', label: '3D MASSING', count: mode === 'city' ? city.hotspots.length : 0 },
+    { id: 'extrusions', label: '3D MASSING', count: mode === 'city' ? hotspotCount : 0 },
   ]
 
   return (
-    <div className="atlas-layer-stack" data-testid="atlas-layer-stack">
+    <div className={collapsed ? 'atlas-layer-stack collapsed' : 'atlas-layer-stack'} data-testid="atlas-layer-stack">
       <div className="layer-head">
         <span>OSIRIS / GEOLIBRE LAYERS</span>
-        <small>viewport-aware</small>
+        <button type="button" className="layer-collapse" onClick={onToggleCollapsed} data-testid="layer-stack-toggle">
+          {collapsed ? 'OPEN' : 'HIDE'}
+        </button>
       </div>
-      <div className="sensor-strip" data-testid="sensor-strip">
-        {SENSOR_MODES.map((preset) => (
-          <button key={preset.id} className={sensorMode === preset.id ? 'sensor-chip active' : 'sensor-chip'} onClick={() => onSensorMode(preset.id)} data-testid={`sensor-${preset.id}`}>
-            {preset.label}
-          </button>
-        ))}
-      </div>
-      {layerRows.map((layer) => (
-        <label key={layer.id} className="layer-toggle">
-          <input type="checkbox" checked={layers[layer.id]} onChange={() => onToggle(layer.id)} data-testid={`layer-${layer.id}`} />
-          <span>{layer.label}</span>
-          <small>{layer.count}</small>
-        </label>
-      ))}
+      {!collapsed && (
+        <>
+          <div className="sensor-strip" data-testid="sensor-strip">
+            {SENSOR_MODES.map((preset) => (
+              <button key={preset.id} className={sensorMode === preset.id ? 'sensor-chip active' : 'sensor-chip'} onClick={() => onSensorMode(preset.id)} data-testid={`sensor-${preset.id}`}>
+                {preset.label}
+              </button>
+            ))}
+          </div>
+          {layerRows.map((layer) => (
+            <label key={layer.id} className="layer-toggle">
+              <input type="checkbox" checked={layers[layer.id]} onChange={() => onToggle(layer.id)} data-testid={`layer-${layer.id}`} />
+              <span>{layer.label}</span>
+              <small>{layer.count}</small>
+            </label>
+          ))}
+        </>
+      )}
     </div>
   )
 }
@@ -559,6 +619,7 @@ function CameraMarker({
   bearing,
   showViewshed,
   selected,
+  compact,
   onClick,
 }: {
   camera: AtlasCamera
@@ -568,6 +629,7 @@ function CameraMarker({
   bearing: number
   showViewshed: boolean
   selected: boolean
+  compact: boolean
   onClick: () => void
 }) {
   const point = lonLatToScreen(camera, center, zoom, size)
@@ -577,7 +639,7 @@ function CameraMarker({
   const coneWidth = clamp(coneLength * (camera.fov / 42), 42, 210)
   return (
     <button
-      className={`cctv-node cctv-${camera.type} ${selected ? 'selected' : ''}`}
+      className={`cctv-node cctv-${camera.type} ${selected ? 'selected' : ''} ${compact ? 'compact' : ''}`}
       style={{ left: point.left, top: point.top, display: hidden ? 'none' : undefined }}
       onPointerDown={(event) => event.stopPropagation()}
       onClick={(event) => {
@@ -668,7 +730,7 @@ function RecordsRoomBlueprint({ city, view }: { city: AtlasLocation; view: ViewM
     <div className="room-blueprint" data-testid="room-blueprint">
       <div className="room-header">
         <span>{city.roomLabel}</span>
-        <small>{city.label} / composite interior plan</small>
+        <small>{city.label} / internal room plan</small>
       </div>
       <div className="room-plan">
         <div className="room-zone zone-entry">
@@ -709,7 +771,7 @@ function RecordsRoomBlueprint({ city, view }: { city: AtlasLocation; view: ViewM
         </button>
       </div>
       <div className="room-footer">
-        <span>Fictionalized schematic</span>
+        <span>Operational schematic</span>
         <span>Street context: {city.briefing}</span>
       </div>
     </div>
@@ -724,26 +786,57 @@ function trackedActorCount(view: ViewModel | null): number {
 }
 
 function usePublicCameraRegistry(city: AtlasLocation, mode: 'city' | 'world'): { cameras: AtlasCamera[]; status: RegistryStatus } {
+  const [remoteCameras, setRemoteCameras] = useState<{ cityId: string; cameras: AtlasCamera[] } | null>(null)
+  const [failedCityId, setFailedCityId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (mode !== 'city' || !registryUrlFor(city)) return
+    let cancelled = false
+    fetchRegistryCameras(city)
+      .then((parsed) => {
+        if (cancelled) return
+        if (parsed.length === 0) {
+          setFailedCityId(city.id)
+          return
+        }
+        setRemoteCameras({ cityId: city.id, cameras: mergeCameraSets(city.cameras, parsed) })
+        setFailedCityId(null)
+      })
+      .catch(() => {
+        if (!cancelled) setFailedCityId(city.id)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [city, mode])
+
+  const cityRemoteCameras = remoteCameras?.cityId === city.id ? remoteCameras.cameras : null
+  const failed = failedCityId === city.id
+  if (cityRemoteCameras) return { cameras: cityRemoteCameras, status: city.cameraSource.apiJsonUrl ? 'official-api' : 'official-geojson' }
+  if (mode === 'city' && (city.cameraSource.geoJsonUrl || city.cameraSource.apiJsonUrl) && !failed) return { cameras: city.cameras, status: 'loading' }
+  return { cameras: city.cameras, status: failed ? 'unavailable' : 'source-records' }
+}
+
+function useGlobalCameraRegistry(mode: 'city' | 'world'): { cameras: AtlasCamera[]; status: RegistryStatus } {
+  const fallbackCameras = useMemo(() => ATLAS_LOCATIONS.flatMap((location) => location.cameras), [])
   const [remoteCameras, setRemoteCameras] = useState<AtlasCamera[] | null>(null)
   const [failed, setFailed] = useState(false)
 
   useEffect(() => {
-    const url = city.cameraSource.apiJsonUrl ?? city.cameraSource.geoJsonUrl
-    if (mode !== 'city' || !url) return
+    if (mode !== 'world') return
     let cancelled = false
-    fetch(url)
-      .then((response) => {
-        if (!response.ok) throw new Error(`camera registry ${response.status}`)
-        return response.json() as Promise<GeoJsonFeatureCollection | TflJamCam[]>
-      })
-      .then((payload) => {
+    Promise.all(
+      ATLAS_LOCATIONS.map((location) => {
+        if (!registryUrlFor(location)) return Promise.resolve(location.cameras)
+        return fetchRegistryCameras(location)
+          .then((parsed) => mergeCameraSets(location.cameras, parsed))
+          .catch(() => location.cameras)
+      }),
+    )
+      .then((groups) => {
         if (cancelled) return
-        const parsed = city.cameraSource.apiJsonUrl ? parseTflJamCams(payload as TflJamCam[], city) : parseCameraGeoJson(payload as GeoJsonFeatureCollection, city)
-        if (parsed.length === 0) {
-          setFailed(true)
-          return
-        }
-        setRemoteCameras(parsed)
+        setRemoteCameras(mergeCameraSets(fallbackCameras, groups.flat()))
+        setFailed(false)
       })
       .catch(() => {
         if (!cancelled) setFailed(true)
@@ -751,11 +844,42 @@ function usePublicCameraRegistry(city: AtlasLocation, mode: 'city' | 'world'): {
     return () => {
       cancelled = true
     }
-  }, [city, mode])
+  }, [fallbackCameras, mode])
 
-  if (remoteCameras) return { cameras: remoteCameras, status: city.cameraSource.apiJsonUrl ? 'official-api' : 'official-geojson' }
-  if (mode === 'city' && (city.cameraSource.geoJsonUrl || city.cameraSource.apiJsonUrl) && !failed) return { cameras: city.cameras, status: 'loading' }
-  return { cameras: city.cameras, status: failed ? 'unavailable' : 'source-records' }
+  if (mode !== 'world') return { cameras: fallbackCameras, status: 'source-records' }
+  if (remoteCameras) return { cameras: remoteCameras, status: 'global-registry' }
+  return { cameras: fallbackCameras, status: failed ? 'unavailable' : 'loading' }
+}
+
+function registryUrlFor(city: AtlasLocation): string | null {
+  return city.cameraSource.apiJsonUrl ?? city.cameraSource.geoJsonUrl ?? null
+}
+
+async function fetchRegistryCameras(city: AtlasLocation): Promise<AtlasCamera[]> {
+  const url = registryUrlFor(city)
+  if (!url) return city.cameras
+  const response = await fetch(url)
+  if (!response.ok) throw new Error(`camera registry ${response.status}`)
+  const payload = (await response.json()) as GeoJsonFeatureCollection | TflJamCam[]
+  return city.cameraSource.apiJsonUrl ? parseTflJamCams(payload as TflJamCam[], city) : parseCameraGeoJson(payload as GeoJsonFeatureCollection, city)
+}
+
+function mergeCameraSets(priorityCameras: AtlasCamera[], registryCameras: AtlasCamera[]): AtlasCamera[] {
+  const seen = new Set<string>()
+  return [...priorityCameras, ...registryCameras].filter((camera) => {
+    if (seen.has(camera.id)) return false
+    seen.add(camera.id)
+    return true
+  })
+}
+
+function cameraSourceFor(camera: AtlasCamera | null, fallbackCity: AtlasLocation): AtlasLocation['cameraSource'] {
+  if (!camera) return fallbackCity.cameraSource
+  const staticOwner = ATLAS_LOCATIONS.find((location) => location.cameras.some((candidate) => candidate.id === camera.id))
+  if (staticOwner) return staticOwner.cameraSource
+  if (camera.id.startsWith('tfl-') || camera.sourceUrl?.includes('tfl.gov.uk')) return getAtlasLocation('london').cameraSource
+  if (camera.id.startsWith('dcgis-') || camera.sourceUrl?.includes('data.gov')) return getAtlasLocation('dc').cameraSource
+  return fallbackCity.cameraSource
 }
 
 interface GeoJsonFeatureCollection {
@@ -802,7 +926,6 @@ function parseTflJamCams(payload: TflJamCam[], city: AtlasLocation): AtlasCamera
   })
   return cameras
     .sort((a, b) => a.distance - b.distance)
-    .slice(0, 12)
     .map(({ distance: _distance, ...camera }) => camera)
 }
 
@@ -835,9 +958,7 @@ function parseCameraGeoJson(geojson: GeoJsonFeatureCollection, city: AtlasLocati
     })
   })
   return cameras
-    .filter((camera): camera is AtlasCamera & { distance: number } => Boolean(camera))
     .sort((a, b) => a.distance - b.distance)
-    .slice(0, 12)
     .map(({ distance: _distance, ...camera }) => camera)
 }
 
@@ -857,13 +978,14 @@ function distanceSq(a: { lat: number; lon: number }, b: { lat: number; lon: numb
 function registryStatusLabel(status: RegistryStatus): string {
   if (status === 'official-api') return 'official live API'
   if (status === 'official-geojson') return 'official GeoJSON'
+  if (status === 'global-registry') return 'global public registry'
   if (status === 'loading') return 'loading official registry'
   if (status === 'unavailable') return 'source fallback'
   return 'source records'
 }
 
 interface CameraMediaSpec {
-  type: 'video' | 'image' | 'hls' | 'metadata'
+  type: 'video' | 'image' | 'hls' | 'iframe' | 'metadata'
   url: string | null
   label: string
 }
@@ -872,6 +994,7 @@ function cameraMediaFor(camera: AtlasCamera | null, source: AtlasLocation['camer
   if (!camera) return { type: 'metadata', url: null, label: 'NO FEED' }
   if (camera.feedUrl && camera.mediaType === 'video') return { type: 'video', url: camera.feedUrl, label: 'REAL VIDEO' }
   if (camera.feedUrl && camera.mediaType === 'hls') return { type: 'hls', url: camera.feedUrl, label: 'REAL HLS' }
+  if (camera.feedUrl && camera.mediaType === 'iframe') return { type: 'iframe', url: camera.feedUrl, label: 'REAL IFRAME' }
   if (camera.imageUrl && (!camera.mediaType || camera.mediaType === 'image')) return { type: 'image', url: camera.imageUrl, label: 'REAL IMAGE' }
   if (source.livePageUrl) return { type: 'metadata', url: source.livePageUrl, label: 'OPEN SOURCE' }
   return { type: 'metadata', url: null, label: 'METADATA ONLY' }
@@ -928,7 +1051,7 @@ function buildTiles(center: { lat: number; lon: number }, zoom: number, size: St
       const wrappedX = ((x % max) + max) % max
       tiles.push({
         key: `${zoom}:${wrappedX}:${y}:${col}:${row}`,
-        src: `https://tile.openstreetmap.org/${zoom}/${wrappedX}/${y}.png`,
+        src: mapTileUrl(zoom, wrappedX, y),
         left: size.width / 2 + (x - centerTile.x) * TILE_SIZE,
         top: size.height / 2 + (y - centerTile.y) * TILE_SIZE,
       })

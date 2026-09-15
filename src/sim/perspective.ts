@@ -4,7 +4,7 @@
  * simulation truth and UI/AI consumers. View models are built field by
  * field — hidden state can never leak through a spread operator.
  *
- *   BLACKGLASS: observations, confidence, hypotheses, synthetic
+ *   BLACKGLASS: observations, confidence, hypotheses, modeled
  *                surveillance layers — never hidden ground truth.
  *   HYDRA:       controlled holders/copies, perceived relationships,
  *                own commands, public events, coarse fuzzy heat —
@@ -189,7 +189,7 @@ function buildBlackglass(state: SimulationState, scenarioTitle: string, alerts: 
     lastSeen: v.lastSeen,
   }))
 
-  // Observations: only synthetic sensor observations (the BG workstation
+  // Observations: only sensor observations (the BG workstation
   // never reads ground-truth copy holders directly).
   const observations = state.entities.observations
     .all()

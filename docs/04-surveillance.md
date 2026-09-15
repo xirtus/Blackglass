@@ -2,7 +2,7 @@
 
 Implementation of [`site/05-surveillance.html`](../site/05-surveillance.html).
 
-## Synthetic feeds (all generated; no real systems)
+## Source feeds and modeled observations
 
 | Category | Game abstraction | Reveals |
 | --- | --- | --- |
@@ -10,7 +10,7 @@ Implementation of [`site/05-surveillance.html`](../site/05-surveillance.html).
 | access | `BADGE-<location>` events | presence in controlled places |
 | device | `NET-<kind>` pings | ownership-probability association |
 | social | `SOCIAL-GRAPH` metadata surges | relationship activation |
-| financial | `FIN-SYNTH` candidates | intent clues, false positives |
+| financial | `FIN-ANOM` candidates | intent clues, false positives |
 | aerial | `AERIAL-WINDOW` windows | costly spatial confirmation |
 | human | `FIELD-REPORT` | context-rich but fallible |
 
@@ -28,7 +28,7 @@ The HYDRA player receives none of this — only coarse heat buckets.
 
 ## Anomaly engine
 
-Three disagreeing models over synthetic baselines:
+Three disagreeing models over behavior baselines:
 - **ATHENA** — movement/routine ("left work early", "far from anchors").
 - **ORACLE** — social/trust ("activated dormant relationship").
 - **JANUS** — conservative/unknowns ("device went silent", unknown edges).
@@ -41,13 +41,13 @@ truth labels — false positives are generated, not accidental.
 
 The Phase 2-style OSINT layer is represented by `state.osint.sources` and
 `state.osint.signals`. Scenario manifests can declare source adapters for
-real tools, but the shipped harness runs deterministic offline stand-ins:
+real tools; the current harness keeps deterministic local adapters for repeatable runs:
 
 | Adapter kind | Upstream inspiration | Game output |
 | --- | --- | --- |
 | worldMonitor | `koala73/worldmonitor` | public chatter and risk-trend signals |
 | caseGraph | `elm1nst3r/GHOST-osint-crm` | analyst case-graph/entity-resolution leads |
-| radioSpectrum | WireTapper-style local RF tooling | synthetic RF trace intersections |
+| radioSpectrum | WireTapper-style local RF tooling | RF trace intersections |
 | publicCamera | authorized camera packs | low-confidence street-node associations |
 
 BLACKGLASS sees source status, reliability, mode and private signals.

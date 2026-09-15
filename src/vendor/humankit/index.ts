@@ -1,0 +1,15 @@
+export { RIG_VERSION, BONE_DEFS, CORE_BONES, FINGER_BONES, SOCKET_BONES, SKIN_TONES } from './rig/spec';
+export { buildRig } from './rig/build';
+export { Human, type QualityTier, type HumanOptions } from './human';
+export { createHuman, createAthlete, PRESETS, type CreateHumanOptions } from './generator';
+export { dnaFromSeed, athleteDNA, rng, type HumanDNA, type BodyParams, type FaceParams } from './body/profiles';
+export { Animator, type PlayOptions } from './anim/animator';
+export { bakeClip, mirrorClip } from './anim/clip';
+export { PoseWriter, kf, type ClipDef, type PoseFn } from './anim/pose';
+export { ALL_CLIP_DEFS } from './anim/library';
+export { solveTwoBoneIK, solveLookAt } from './anim/ik';
+export { createKitMaterials, shirtTexture, type TeamKit } from './clothing/kit';
+export { buildShirt, buildTrousers, buildShoes } from './clothing/garments';
+export { makeCricketBat, makeHelmet, makeCap, makePads, makeGloves } from './equipment/props';
+export { tierForScreenSize } from './lod';
+export { inspectObject, formatReport, type HumanReport } from './report';

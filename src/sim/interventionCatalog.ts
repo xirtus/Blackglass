@@ -3,7 +3,7 @@
  * abstract, high-level strategic commands with prerequisites, delays,
  * probability, costs, publicity, suspicion, attribution, infrastructure
  * and Hydra effects. Harmful real-world methods stay abstract; kinetic
- * options are strategic commands only; black-program tiers are fictional.
+ * options are strategic commands only; black-program tiers are abstract.
  */
 import catalogJson from '@/data/interventions.json'
 import type { FactionResources, InterventionDef, InterventionInstance } from './types'

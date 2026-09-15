@@ -14,7 +14,7 @@ load and in tests). Vertical-slice catalog: `account_hold`,
 `travel_restriction`, `takedown_request`, `credibility_challenge`,
 `service_disruption`, `server_isolation`, `traffic_control`, `cordon`,
 `surveillance_team`, `detention`, `grid_blackout`, `signal_eclipse`
-(fictional black-program).
+(black-program).
 
 ## Validation gates
 

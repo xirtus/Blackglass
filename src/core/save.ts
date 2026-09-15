@@ -20,7 +20,7 @@ export interface CampaignState {
   budget: number
   publicTrust: number
   attribution: number
-  /** Fiction-tier tech unlocks (black-program systems). */
+  /** Advanced tech unlocks (black-program systems). */
   technology: Record<string, number>
   /** Persistent cross-scenario awareness. */
   awareness: number

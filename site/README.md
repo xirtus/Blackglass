@@ -21,7 +21,7 @@ No JavaScript build step is required. The only optional external dependency is t
 - `assets/site.css`, `assets/site.js` — shared presentation
 
 ## Working-title note
-BLACKGLASS // HYDRA is used as a fictional working title. The game plan recommends fictionalizing private locations, synthetic surveillance data, and abstracting harmful real-world procedures.
+BLACKGLASS // HYDRA is used as a classified working title. The game plan recommends classifiedizing private locations, generated surveillance data, and abstracting harmful real-world procedures.
 
 ## Revision 1.1 — Dual perspective
 The same deterministic scenario is now designed to be playable as either **BLACKGLASS // Containment** or **HYDRA // Disclosure**. See `18-leaker-network.html`. The master build prompt and relevant simulation/campaign/UI/QA pages require strict hidden-information boundaries and a bounded BLACKGLASS AI opponent when playing HYDRA.

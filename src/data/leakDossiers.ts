@@ -16,9 +16,9 @@ const CODENAMES = ['ORPHEUS VAULT', 'BLUE LANTERN', 'CROWN STATIC', 'NIGHT MARKE
 const ARCHIVE_TYPES = [
   'crash-retrieval and nonhuman materials appendix',
   'sealed assassination-era continuity files',
-  'deep-cover identity registry for fictional foreign networks',
+  'deep-cover identity registry for foreign networks',
   'black-budget time-displacement experiment ledger',
-  'private-island trafficking evidence chain tied to composite elites',
+  'private-island trafficking evidence chain tied to protected elites',
   'offshore influence and kompromat exchange index',
 ]
 
@@ -51,7 +51,7 @@ const MYTHS = [
 
 const DANGERS = [
   'burns sources faster than they can be extracted',
-  'could expose fictional undercover networks across multiple countries',
+  'could expose undercover networks across multiple countries',
   'turns every denial into a search-demand spike',
   'contains enough corroboration to survive partial takedowns',
   'makes containment politically more damaging than publication',
@@ -67,7 +67,7 @@ export function leakDossierForScenario(manifest: ScenarioManifest): LeakDossier 
   const archiveIndex = Math.abs(seed) % ARCHIVE_TYPES.length
   return {
     codename: pick(CODENAMES, seed, 1),
-    classification: pick(['COSMIC/NOFORN', 'UMBRA/ORCON', 'MAJESTIC/COMPOSITE', 'EYES-ONLY/FICTIONAL'], seed, 2),
+    classification: pick(['COSMIC/NOFORN', 'UMBRA/ORCON', 'MAJESTIC/ORCON', 'EYES-ONLY/COMPARTMENTED'], seed, 2),
     hook: `A missing ${ARCHIVE_TYPES[archiveIndex]} surfaced inside ${manifest.origin.name}.`,
     archiveType: ARCHIVE_TYPES[archiveIndex],
     evidenceChain: EVIDENCE[archiveIndex],

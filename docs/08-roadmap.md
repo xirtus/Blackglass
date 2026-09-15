@@ -11,7 +11,7 @@ before geographic/presentation expansion.
    against the `GeoProvider` contract in `src/three/geo.ts`.
 2. OSM-derived road/building pipeline (permitted data only); swap
    `WorldLayer` inputs from manifest JSON to geo chunks.
-3. Scale `generateSyntheticLives` to 500–1,000 explicit + aggregates
+3. Scale `generateScenarioLives` to 500–1,000 explicit + aggregates
    (the generator is already parameterized; move it into the worker).
 4. Vehicles/routines/4–6 observation source types with confidence models;
    social-circle expansion; anomaly false-positive tuning.
@@ -32,7 +32,7 @@ before geographic/presentation expansion.
 - City/state strategic map (MapLibre/deck.gl), server nodes + digital
   transfers, aggregate population mirrors, media reach, persistent
   campaign authority/trust/technology (fields exist in `CampaignState`).
-- Planet/network view, copy-estimation confidence, fictional black-program
+- Planet/network view, copy-estimation confidence, black-program
   tree, systemic damage + endgame scoring.
 
 ## Phase 6 — content + polish

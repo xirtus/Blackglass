@@ -96,7 +96,7 @@ export class HydraAgentAI implements FactionController {
     this.lastThink = now
     const out: Command[] = []
 
-    // Driven by the synthetic holder's intent/trust/credibility logic:
+    // Driven by the holder's intent/trust/credibility logic:
     // the opposing HYDRA controller duplicates to trusted contacts and
     // releases when credibility is high enough.
     const credible = view.copies.find((c) => c.status !== 'released' && c.credibility >= 0.55 && c.status !== 'destroyed')

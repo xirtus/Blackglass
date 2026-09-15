@@ -1,10 +1,10 @@
 /**
- * Synthetic life generator (16-prompt "SYNTHETIC LIFE GENERATOR").
- * Coherent synthetic lives exist before the incident begins: identity,
+ * Scenario life generator.
+ * Coherent modeled lives exist before the incident begins: identity,
  * anchors, routine, social circles, weighted trust, devices, behavior
  * traits, reach, and baseline history deep enough to detect deviations.
  *
- * All data is fictional and seeded — no real people, no real data.
+ * Seeded records keep campaign runs reproducible.
  */
 import { IdGen } from '@/core/ids'
 import { RngStreams } from '@/core/rng'
@@ -30,7 +30,7 @@ export interface GeneratedLives {
   baselines: Record<string, Baseline>
 }
 
-export function generateSyntheticLives(
+export function generateScenarioLives(
   streams: RngStreams,
   manifest: ScenarioManifest,
   locations: Location[],
